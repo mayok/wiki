@@ -35,6 +35,7 @@ nav {
   background: $header_color;
   border-top: 4px solid $base_color;
   a {
+    display: inline-block;
     color: #fff;
   }
 }
@@ -44,15 +45,25 @@ nav {
 }
 .nav-right {
   float: right;
-  padding: 0 8px 0 0;
+  margin-right: -24px;
+  padding: 0 8px 0;
   li {
     float: left;
   }
   a {
     margin: 0 8px;
-    padding: 4px 2px;
+    padding: 0 2px;
+    min-width: 3.5em;
+    text-align: center;
     box-sizing: border-box;
   }
+}
+
+/* page */
+.page-title {
+  margin: 0 0 20px;
+  text-align: right;
+  font-size: 1.5em;
 }
 
 /* code editor form */

@@ -8,5 +8,6 @@ header
         ul
           li = link_to "Home", root_path
           li = link_to "Create", new_page_path
-          li = link_to "Edit", "#"
-
+          - unless current_page?(root_path)
+            - unless current_page?(new_page_path)
+              li = link_to "Edit", edit_page_path
