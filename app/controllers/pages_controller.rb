@@ -1,8 +1,4 @@
 class PagesController < ApplicationController
-  def new 
-    @page = Page.new
-  end
-
   def create
     @page = Page.new(page_params)
     if @page.save
@@ -11,10 +7,6 @@ class PagesController < ApplicationController
     else
       render 'new'
     end
-  end
-
-  def edit
-    @page = Page.find(params[:id])
   end
 
   def update
@@ -27,11 +19,19 @@ class PagesController < ApplicationController
   end
 
   def index
-    @pages = Page.all
+    pages = Page.all
+    respond_to do |format|
+      format.html
+      format.json { render json: pages, only: [:title] }
+    end
   end
 
   def show
-    @page = Page.find(params[:id])
+    page = Page.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: page, only: [:title, :content] }
+    end
   end
 
   private
