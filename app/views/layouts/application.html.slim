@@ -3,7 +3,6 @@ html
   head
   title Wiki2
   = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => false
-  = javascript_include_tag 'application', 'data-turbolinks-track' => false
   = csrf_meta_tags
 
   body
@@ -14,4 +13,8 @@ html
       .container
         == yield
 
-        == render 'layouts/footer'
+
+  script#pages-template[type="text/template"]
+    <li><%= title %></li>
+
+  == render 'layouts/footer'
