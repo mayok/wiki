@@ -22,7 +22,7 @@ class PagesController < ApplicationController
     pages = Page.all
     respond_to do |format|
       format.html
-      format.json { render json: pages, only: [:title] }
+      format.json { render json: pages, only: [:id, :title] }
     end
   end
 

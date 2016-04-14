@@ -2,9 +2,9 @@
   var Page = Backbone.Model.extend({
     defaults: function() {
       return {
-        title    : "title",
-        //tag      : "",
-        content  : ""
+        id       : '',
+        title    : '',
+        content  : ''
       };
     },
 
@@ -17,14 +17,7 @@
 
   var Pages = Backbone.Collection.extend({
     model : Page,
-    url   : "/pages.json",
-
-    // parse: function (res) {
-    //   if(res.error) {
-    //     console.log("PagesCollection: "+ res.error.message);
-    //   }
-    //   return res.list;
-    // }
+    url   : "/pages",
   });
 
   var PageView = Backbone.View.extend({
@@ -32,10 +25,19 @@
 
     template: _.template($('#pages-template').html()),
 
+    events: {
+      "click .list-items": "showPageDetail"
+    },
+
     render: function () {
       this.$el.html(this.template(this.model.attributes));
       return this;
     },
+
+    showPageDetail: function() {
+      router.navigate("page/" + this.model.id, true);
+      return false;
+    }
   })
 
   var PagesView = Backbone.View.extend({
@@ -53,6 +55,8 @@
       _(this.collection).each(function (model) {
         this.collection.add(model);
       }, this);
+
+      return this;
     },
 
     appendItem: function(model) {
@@ -61,20 +65,39 @@
     },
 
     resetItems: function (collection) {
+      console.log(collection);
       collection.each(function(model) {
         this.appendItem(model);
       }, this);
     },
 
-    error: function () {
-      console.log("error: PagesView");
-    },
   });
+
+  var PageDetailView = Backbone.View.extend({
+    el: $('#main'),
+
+    initialize: function() {
+      _.bindAll(this, "render");
+      this.listenTo(this.model, 'sync', this.render);
+      this.model.fetch();
+    },
+
+    template: _.template($('#page-template').html()),
+
+    render: function () {
+      this.$el.html(this.template(this.model.attributes));
+      return this;
+    },
+  })
 
   var HeaderView = Backbone.View.extend({
     events: {
+      "click .to_root": "home",
       "click #create" : "onCreate",
       "click #edit"   : "onEdit"
+    },
+    home: function() {
+      router.navigate("", { trigger: true });
     },
     onCreate: function () {
       router.navigate("create", { trigger: true });
@@ -98,10 +121,12 @@
     },
 
     index: function() {
+      console.log(this.pages.length);
       var view = new PagesView({collection: this.pages});
     },
 
     show: function (id) {
+      var view = new PageDetailView({ model: this.pages.get(id) });
     },
 
     edit: function (id) {
@@ -112,5 +137,5 @@
   });
 
   var router = new Router();
-  Backbone.history.start();
+  Backbone.history.start({ pushState: true });
 })();

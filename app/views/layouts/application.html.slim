@@ -15,6 +15,10 @@ html
 
 
   script#pages-template[type="text/template"]
-    <li><%= title %></li>
+    li.list-items <%= title %>
+
+  script#page-template[type="text/template"]
+    h2 <%= title %>
+    div <%= content %>
 
   == render 'layouts/footer'
