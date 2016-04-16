@@ -1,0 +1,15 @@
+script#pages-template[type="text/template"]
+  li.list-items <%= title %>
+
+script#page-template[type="text/template"]
+  h2 <%= title %>
+  div <%= content %>
+
+script#edit-template[type="text/template"]
+  .code-editor
+    .code-editor-filename-input
+      input.filename[type="text" placeholder="Filename"]
+
+    .code-editor-textarea
+      <%= content %>
+    .code-editor-preview#preview

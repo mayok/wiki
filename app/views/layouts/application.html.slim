@@ -13,12 +13,6 @@ html
       .container
         == yield
 
-
-  script#pages-template[type="text/template"]
-    li.list-items <%= title %>
-
-  script#page-template[type="text/template"]
-    h2 <%= title %>
-    div <%= content %>
+    == render 'layouts/template'
 
   == render 'layouts/footer'
