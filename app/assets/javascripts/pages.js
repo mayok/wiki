@@ -44,31 +44,32 @@
     el: $('#main'),
 
     initialize: function () {
-      _.bindAll(this, "render", "appendItem", "resetItems");
-      this.listenTo(this.collection, 'add', this.appendItem);
-      this.listenTo(this.collection, 'reset', this.resetItems);
-      this.listenTo(this.collection, 'sync', this.render);
+      _.bindAll(this, "render", "addOne", "addAll");
+      this.listenTo(this.collection, 'add', this.addOne);
+      this.listenTo(this.collection, 'update', this.render);
+      this.listenTo(this.collection, 'reset', this.addAll);
+      this.listenTo(this.collection, 'sync', this.addAll);
       this.collection.fetch();
     },
 
     render: function () {
-      _(this.collection).each(function (model) {
-        this.collection.add(model);
+      this.$el.html('');
+
+      var view = new PageView();
+      this.collection.each(function(model) {
+        view.model = model;
+        this.$el.html(view.render().el);
       }, this);
 
       return this;
     },
 
-    appendItem: function(model) {
-      var view = new PageView({ model: model });
-      this.$el.html(view.render().el);
+    addOne: function(model) {
+      this.collection.add(model, { silent: true });
     },
 
-    resetItems: function (collection) {
-      console.log(collection);
-      collection.each(function(model) {
-        this.appendItem(model);
-      }, this);
+    addAll: function (collection) {
+      collection.each(this.addOne, this);
     },
 
   });
@@ -79,7 +80,6 @@
     initialize: function() {
       _.bindAll(this, "render");
       this.listenTo(this.model, 'sync', this.render);
-      this.model.fetch();
     },
 
     template: _.template($('#page-template').html()),
@@ -117,16 +117,21 @@
     },
     initialize: function () {
       this.headerview = new HeaderView({ el: $('#header') });
-      this.pages = new Pages();
+      this.pages      = new Pages();
+      this.pagesView  = new PagesView({collection: this.pages});
+      this.pageView   = new PageDetailView();
     },
 
     index: function() {
-      console.log(this.pages.length);
-      var view = new PagesView({collection: this.pages});
+      if(this.pages.length)
+        this.pagesView.render();
     },
 
     show: function (id) {
-      var view = new PageDetailView({ model: this.pages.get(id) });
+      this.pageView.model = this.pages.get(id);
+      if(this.pageView.model) {
+        this.pageView.render();
+      }
     },
 
     edit: function (id) {
